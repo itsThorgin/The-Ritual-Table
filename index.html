@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Tarot &amp; Runes · Ritual table</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="spreads.js" defer></script>
+  <script src="cards.js" defer></script>
+  <script src="deck-engine.js" defer></script>
+  <script src="interpretation.js" defer></script>
+  <script src="reading-export.js" defer></script>
+  <script src="rune-visuals.js" defer></script>
+  <script src="rune-modes.js" defer></script>
+  <script src="rune-engine.js" defer></script>
+  <script src="rune-layouts.js" defer></script>
+  <script src="rune-reading.js" defer></script>
+  <script src="rune-catalogue.js" defer></script>
+  <script src="rune-interpretation.js" defer></script>
+  <script src="rune-reading-export.js" defer></script>
+  <script src="rune-preparation.js" defer></script>
+  <script src="divination.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="app">
+    <header class="masthead">
+      <div class="seal" aria-hidden="true">✦</div>
+      <div><p class="eyebrow">A quiet moment of reflection</p><h1 id="app-title">The Ritual Table</h1></div>
+      <span class="local-label">Local &amp; private</span>
+    </header>
+
+    <section id="divination-choice" class="choice-screen" aria-labelledby="choice-title">
+      <p class="eyebrow">Two paths</p>
+      <h2 id="choice-title" tabindex="-1">Choose your divination</h2>
+      <p class="choice-intro muted">Take a moment to explore what deserves your attention. This app was made for fun, with possible self-discovery and reflection on the side.</p>
+      <div class="choice-grid">
+        <section class="panel choice-panel" aria-labelledby="tarot-choice-title">
+          <div class="choice-emblem" aria-hidden="true"><div class="card-back"><span>✦</span></div></div>
+          <h3 id="tarot-choice-title">Tarot divination</h3>
+          <p class="muted">The Gothic Tarot · 78 cards<br>Mystic Seven or Celtic Cross</p>
+          <button id="choose-tarot">Choose Tarot</button>
+        </section>
+        <section class="panel choice-panel" aria-labelledby="rune-choice-title">
+          <div class="choice-emblem" aria-hidden="true"><div class="rune-stone rune-concealed"></div></div>
+          <h3 id="rune-choice-title">Rune divination</h3>
+          <p class="muted">Elder Futhark · 24 runes<br>Five reflective reading modes</p>
+          <button id="choose-runes">Choose Runes</button>
+        </section>
+      </div>
+      <div id="active-session" class="panel active-session" hidden><p id="active-session-summary"></p><button id="return-session">Return to preparation</button></div>
+      <p class="small muted choice-reminder">Readings stay in this session. Closing or refreshing clears them. Completed readings can be downloaded as text.</p>
+    </section>
+
+    <div id="branch-navigation" class="branch-navigation" hidden><p id="branch-caption" class="eyebrow">Tarot divination</p><button id="choose-divination" aria-describedby="navigation-note">Choose divination</button><p id="navigation-note" class="small muted" hidden>Stop shuffling before choosing another divination.</p></div>
+
+    <div id="tarot-branch" hidden>
+    <div class="stage-note"><strong>Your reading</strong><span>Prepare your deck, reveal your cards, and explore their meanings. Download the completed reading to keep it; refreshing or closing the page clears the current reading.</span></div>
+
+    <section class="panel preparation" aria-labelledby="preparation-title">
+      <div class="section-heading"><div><p class="eyebrow">01 · Prepare your table</p><h2 id="preparation-title">Set your intention</h2></div><span class="small muted">For fun and reflection</span></div>
+      <div class="preparation-grid">
+        <div class="settings">
+          <label for="spread-choice">Your spread</label>
+          <select id="spread-choice"><option value="mystic-seven">The Mystic Seven · 7 cards</option><option value="celtic-cross">The Celtic Cross · 10 cards + signifier</option></select>
+          <p id="spread-purpose" class="small muted"></p>
+          <p class="small muted">Changing the spread or signifying card starts a fresh deck preparation.</p>
+          <label for="intention">Question or intention <span class="muted">(optional)</span></label>
+          <textarea id="intention" rows="2" maxlength="500" placeholder="What would you like to reflect on?"></textarea>
+          <div id="signifier-setting" hidden><label for="signifier">Your signifying card</label><select id="signifier" aria-describedby="signifier-description"></select><p class="small muted">Choose a representative from all 78 cards. This chosen card stays upright and is reserved before shuffling the remaining 77.</p><p id="signifier-description" class="signifier-description"></p></div>
+          <label class="check"><input type="checkbox" id="reversals"> Include reversed cards</label>
+          <p class="small muted">When enabled, each shuffled card has an independent 50% chance of being reversed. Orientations are fixed before reading.</p>
+          <details class="personal-touches"><summary>Personal touches <span class="muted">· optional</span></summary><fieldset id="touch-controls"><label class="check"><input type="checkbox" id="use-color"> Use a color that speaks to you</label><input type="color" id="color-choice" aria-label="Your chosen color" value="#d0af77" disabled><label for="favorite-numbers">Favorite numbers</label><input id="favorite-numbers" maxlength="240" placeholder="For example: 7, 23"><p class="small muted">Up to 12 whole numbers, separated by commas or spaces. Each may have up to 15 digits.</p><p class="small muted">After stopping, apply your choices to move the top of the hidden deck. Only applied choices affect it; you can apply them again deliberately.</p><button id="apply-touches" disabled>Apply to deck</button><p id="touch-status" class="small muted" role="status" aria-live="polite">No personal touches applied.</p></fieldset></details>
+          <div id="ritual-setting" hidden><label class="check"><input type="checkbox" id="ritual-guide"> Follow the six-round Celtic ritual</label><p class="small muted">Reader: three shuffle-and-cut rounds. Inquirer: three more. You may play both roles. Turn this guide off to read before all six rounds.</p><div id="ritual-progress" hidden><p id="ritual-status" class="small" role="status" aria-live="polite"></p><ol id="ritual-rounds" class="ritual-rounds" aria-label="Ritual rounds"></ol></div></div>
+          <div class="future-controls"><button id="start-shuffle">Start shuffling</button><button id="stop-shuffle" disabled>Stop shuffling</button></div>
+          <p id="shuffle-status" class="small" role="status" aria-live="polite">Shuffle the deck before beginning.</p>
+          <p id="shuffle-count" class="small muted"></p>
+          <details id="cut-panel" class="cut-panel"><summary>Cut into three piles <span id="cut-count" class="muted">· 0 gatherings</span></summary><p class="small muted">After shuffling, stop and divide the current deck. A comes from the top, B from the middle, C from the bottom. Each pile keeps its own card order.</p><fieldset id="cut-controls" disabled><div class="pile-inputs"><label for="pile-a">Pile A<input id="pile-a" type="number" min="1" step="1" inputmode="numeric" value="26"></label><label for="pile-b">Pile B<input id="pile-b" type="number" min="1" step="1" inputmode="numeric" value="26"></label><div class="pile-c"><span>Pile C</span><output id="pile-c" for="pile-a pile-b">26</output></div></div><p id="pile-total" class="small muted"></p><label for="gathering-order">Gather top to bottom</label><select id="gathering-order"><option value="012">A → B → C</option><option value="021">A → C → B</option><option value="102">B → A → C</option><option value="120" selected>B → C → A</option><option value="201">C → A → B</option><option value="210">C → B → A</option></select><p class="small muted">The first pile becomes the top of the gathered deck.</p><div class="cut-actions"><button id="random-cut">Random sizes &amp; order</button><button id="gather-piles">Gather the piles</button></div></fieldset><p id="cut-status" class="small muted" role="status" aria-live="polite">Shuffle and stop to cut your deck.</p></details>
+          <p id="preparation-error" class="preparation-error" role="alert" hidden></p>
+          <button class="primary" id="begin-reading" disabled>Begin reading <span aria-hidden="true">→</span></button>
+          <p class="small muted">Beginning stops the shuffle and locks your entire final deck for this reading.</p>
+        </div>
+        <div class="frame-preview">
+          <p class="eyebrow">Two families · one deck</p>
+          <div id="frame-samples" class="sample-pair"></div>
+          <p class="small muted">Major Arcana carry celestial ornament. Minor Arcana carry the emblem of their suit. Every card shares the same back.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="reading" aria-labelledby="reading-title" hidden>
+      <div class="reading-heading"><div><p class="eyebrow">02 · The ritual table</p><h2 id="reading-title"></h2></div><button id="new-reading">New reading</button></div>
+      <p id="reading-intention" class="intention" hidden></p>
+      <div class="reading-grid">
+        <section class="panel table-panel" aria-label="Your locked spread">
+          <div class="table-top"><span class="eyebrow">Your deck is locked</span><span id="progress" class="small" role="status" aria-live="polite"></span></div>
+          <p id="locked-note" class="small muted"></p>
+          <div id="spread-table" class="spread-table"></div>
+          <div class="reveal-actions"><button class="primary" id="reveal-next"></button><p class="small muted">Select any revealed card to revisit it.</p></div>
+          <details class="position-guide"><summary>Position guide</summary><ol id="position-list"></ol></details>
+        </section>
+        <aside class="panel card-detail" aria-labelledby="detail-title">
+          <p id="reading-selection-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+          <p class="eyebrow" id="detail-position">Your next card</p>
+          <h3 id="detail-title">Let the spread unfold</h3>
+          <div id="detail-face"></div>
+          <p id="detail-category" class="category"></p>
+          <div class="detail-context"><h4>In this position</h4><p id="position-meaning">Reveal the first card to explore its position.</p></div>
+          <div class="detail-context"><h4 id="meaning-heading">From the handbook</h4><p id="card-meaning">Reveal a card to read its handbook meaning.</p><p id="meaning-source" class="source-credit" hidden></p><details id="alternate-reference" class="reversed-reference" hidden><summary id="alternate-heading">Other orientation · reference</summary><p id="alternate-meaning"></p><p class="small muted">Reference only. This does not change the card’s saved orientation.</p></details></div>
+          <section id="position-reflection" class="detail-context position-reflection" aria-labelledby="position-reflection-heading" hidden><h4 id="position-reflection-heading">Reflection for this position</h4><p class="reflection-label small">App-authored reflection</p><p id="reflection-context"></p><p id="reflection-prompt" class="reflection-prompt"></p></section>
+          <button id="download-reading" disabled class="download-button" aria-describedby="download-note">Download reading (.txt)</button>
+          <p id="download-note" class="small muted">Reveal every card to download the reading.</p>
+          <p id="download-status" class="small muted" role="status" aria-live="polite" hidden></p>
+        </aside>
+      </div>
+      <section id="spread-reflection" class="panel spread-reflection" aria-labelledby="spread-reflection-heading" hidden>
+        <p class="eyebrow">App-authored reflection</p><h3 id="spread-reflection-heading">Your complete reading</h3>
+        <p id="spread-reflection-note" class="small muted"></p>
+        <details id="reading-connections"><summary>Read the spread together</summary><div id="connection-groups" class="connection-groups"></div><section id="reflection-recap" class="reflection-recap"></section></details>
+      </section>
+    </section>
+    </div>
+
+    <section id="rune-branch" aria-labelledby="rune-title" hidden>
+      <div id="rune-preparation-panel" class="panel preparation rune-preparation">
+        <div class="section-heading"><div><p class="eyebrow">Elder Futhark · 24 unique runes</p><h2 id="rune-title" tabindex="-1">Prepare your rune table</h2></div><span class="small muted">For fun and reflection</span></div>
+        <div class="preparation-grid">
+          <div class="settings">
+            <label for="rune-mode">Your reading mode</label>
+            <select id="rune-mode" aria-describedby="rune-mode-note"></select>
+            <p id="rune-mode-note" class="small muted"></p>
+            <p id="rune-mode-context" class="small muted"></p>
+            <ol id="rune-role-list" class="rune-role-list"></ol>
+            <label for="rune-question">Question or intention <span class="muted">(optional)</span></label>
+            <textarea id="rune-question" rows="2" maxlength="500" placeholder="What would you like to reflect on?"></textarea>
+            <div id="rune-shuffle-controls" class="future-controls rune-shuffle-controls"><button id="start-rune-shuffle">Start shuffling</button><button id="stop-rune-shuffle" disabled>Stop shuffling</button></div>
+            <p id="rune-shuffle-status" class="small" role="status" aria-live="polite"></p>
+            <p id="rune-shuffle-count" class="small muted"></p>
+            <p id="rune-preparation-error" class="preparation-error" role="alert" hidden></p>
+            <p class="rune-availability" id="rune-availability">All runes face upright. Begin fixes the complete bag and every assignment before any reveal.</p>
+            <button id="begin-rune-reading" class="primary" disabled aria-describedby="rune-availability">Begin rune reading</button>
+            <button id="reset-rune-preparation" class="rune-reset" disabled>Reset preparation</button>
+          </div>
+          <section id="rune-design-examples" class="rune-design" aria-labelledby="rune-design-title">
+            <p class="eyebrow">Stone design examples</p><h3 id="rune-design-title">Engraved stones on ritual cloth</h3>
+            <p class="small muted">Fixed examples, not a draw or reading.</p>
+            <div id="rune-examples" class="rune-tray rune-examples"></div>
+            <p class="small muted">Unmarked stones conceal the symbol. Revealed runes face upright; the outline and text mark the stone being inspected.</p>
+            <details class="rune-glyph-reference"><summary>Rune glyph reference · 24 symbols</summary><p class="small muted">Catalogue symbols, not selected lots.</p><div id="rune-glyph-gallery" class="rune-glyph-gallery"></div></details>
+          </section>
+        </div>
+        <section id="rune-selection" class="rune-selection" aria-labelledby="rune-selection-title" hidden>
+          <div class="rune-selection-heading"><h3 id="rune-selection-title">Choose three concealed lots</h3><p id="rune-pick-count" class="small">0 of 3 selected</p></div>
+          <p class="small muted">Choose in order: Roots, Present, Responsibility. Your first pick locks preparation. To change your choices, reset and shuffle again.</p>
+          <ol id="rune-pick-slots" class="rune-pick-slots"></ol>
+          <p id="rune-selection-announcement" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+          <div id="rune-lot-grid" class="rune-tray rune-lot-grid" role="group" aria-label="24 concealed lots"></div>
+        </section>
+      </div>
+      <section id="rune-reading" aria-labelledby="rune-reading-title" hidden>
+        <div class="reading-heading"><div><p class="eyebrow">Elder Futhark · Your ritual table</p><h2 id="rune-reading-title"></h2></div><button id="new-rune-reading">New reading</button></div>
+        <p id="rune-reading-question" class="intention" hidden></p>
+        <p id="rune-reading-context" class="small muted"></p>
+        <div class="reading-grid rune-reading-grid">
+          <section class="panel table-panel" aria-label="Your locked Rune table">
+            <div class="table-top"><span class="eyebrow">Your rune bag is locked</span><span id="rune-progress" class="small"></span></div>
+            <p class="small muted">All 24 runes and every assignment are fixed. Each rune faces upright.</p>
+            <div id="rune-table" class="rune-tray rune-table" role="group" aria-label="Numbered Rune positions"></div>
+            <div class="reveal-actions"><button id="reveal-next-rune" class="primary"></button><h3 id="rune-completion" tabindex="-1" hidden>Reading complete</h3><p class="small muted">Select any revealed stone to revisit it.</p></div>
+            <details class="position-guide"><summary>Position guide</summary><ol id="rune-position-list"></ol></details>
+          </section>
+          <aside class="panel rune-detail" aria-labelledby="rune-detail-title">
+            <p id="rune-reading-announcement" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+            <p id="rune-detail-position" class="eyebrow"></p>
+            <h3 id="rune-detail-title"></h3>
+            <div id="rune-detail-face"></div>
+            <div id="rune-catalogue-detail" hidden>
+              <div class="detail-context"><h4>Name and historical image</h4><p id="rune-name-image"></p></div>
+              <details id="rune-historical-roots" class="rune-roots"><summary>Historical roots</summary><p id="rune-roots-text"></p><p id="rune-background-name" hidden></p><div id="rune-source-references"></div><h4>About this reflection</h4><p id="rune-adaptation-note"></p></details>
+              <section class="detail-context" aria-labelledby="rune-original-heading"><h4 id="rune-original-heading">Original reflection</h4><p id="rune-themes" class="rune-themes"></p><p id="rune-original-reflection"></p><h4 class="rune-questions-heading">Personal questions · original app content</h4><ol id="rune-personal-questions"></ol></section>
+            </div>
+            <div class="detail-context"><h4>Position question · original app content</h4><p id="rune-position-question"></p><p id="rune-position-invitation" hidden></p></div>
+            <button id="download-rune-reading" class="download-button" aria-describedby="rune-download-note" disabled>Download reading (.txt)</button>
+            <p id="rune-download-note" class="small muted">Reveal every rune to download the reading.</p>
+            <p id="rune-download-status" class="small muted" role="status" aria-live="polite" hidden></p>
+          </aside>
+        </div>
+        <section id="rune-threads-panel" class="panel spread-reflection" aria-labelledby="rune-threads-title" hidden>
+          <p class="eyebrow">Original app reflection</p><h3 id="rune-threads-title">Threads to consider</h3><p id="rune-threads-note" class="small muted"></p>
+          <details id="rune-threads-disclosure"><summary>Read the runes together</summary><div id="rune-connection-groups" class="connection-groups"></div><section id="rune-recap" class="reflection-recap"></section></details>
+        </section>
+      </section>
+    </section>
+
+    <dialog id="session-confirmation" class="session-dialog" aria-labelledby="confirmation-title" aria-describedby="confirmation-message confirmation-download-note">
+      <h2 id="confirmation-title"></h2><p id="confirmation-message"></p>
+      <p id="confirmation-download-note" class="small muted" hidden>Your reading is complete. Return to it to download the TXT archive before clearing it, if you wish.</p>
+      <div class="confirmation-actions"><button id="keep-session" autofocus>Keep current session</button><button id="confirm-clear" class="primary">Switch and clear</button></div>
+    </dialog>
+    <footer class="site-footer">Made with not so much ❤️ by Thorgin © 2026</footer>
+    <noscript><p>This local app needs JavaScript enabled.</p></noscript>
+  </main>
+</body>
+</html>
